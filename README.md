@@ -374,3 +374,67 @@ Por outro lado, o padrão **Multiton** amplia o conceito do Singleton, permitind
 - GAMMA, Erich. et al. Padrões de projetos: Soluções reutilizáveis de software orientados a objetos Bookman editora, 2009.
 
 - K19. Design Patterns em Java. 2012
+
+
+# Outros exemplos:
+
+## Motivação
+Imagine um sistema que precisa gerenciar conexões de banco de dados de forma eficiente. Usar múltiplas conexões desnecessárias pode afetar o desempenho e a integridade dos dados. O Singleton pode garantir que apenas uma conexão seja usada em toda a aplicação, evitando sobrecarga.
+
+Entretanto, em alguns casos, é necessário ter diferentes conexões para diferentes bases de dados. O Multiton permite que várias instâncias sejam criadas e gerenciadas com base em uma chave, como o nome do banco de dados. Assim, ele evita instâncias desnecessárias e melhora a eficiência.
+
+### Singleton
+@import "databaseConnection/DatabaseConnectionSingleton.java"
+
+### Multiton
+@import "databaseConnection/DatabaseConnectionMultiton.java"
+
+
+```mermaid
+---
+title: Singleton DatabaseConnection
+---
+classDiagram
+    class DatabaseConnectionSingleton {
+        - static DatabaseConnectionSingleton instance
+        - String connectionString
+        - DatabaseConnectionSingleton()
+        + static DatabaseConnectionSingleton getInstance()
+        + String getConnectionString()
+    }
+    DatabaseConnectionSingleton o-- "1" databaseConection : instanciaUnica
+```
+
+
+```mermaid
+---
+title: Multiton DatabaseConnection
+---
+classDiagram
+    class DatabaseConnectionMultiton {
+    - static Map<String, DatabaseConnectionMultiton> instances
+    - String connectionInfo
+    - DatabaseConnectionMultiton(String dbName)
+    + static DatabaseConnectionMultiton getInstance(String dbName)
+    + static void addInstance(String dbName)
+    + static DatabaseConnectionMultiton getInstanceOrAdd(String dbName)
+    + static int getInstanceCount()
+    + String getConnectionInfo()
+    }
+
+    class PostgreSQL {
+        - String dbName = "PostgreSQL"
+    }
+
+    class MySQL {
+        - String dbName = "MySQL"
+    }
+
+    class SQLite {
+        - String dbName = "SQLite"
+    }
+
+    DatabaseConnectionMultiton o-- "1" PostgreSQL : instancia
+    DatabaseConnectionMultiton o-- "1" MySQL : instancia
+    DatabaseConnectionMultiton o-- "1" SQLite : instancia
+```
